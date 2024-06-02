@@ -1,0 +1,33 @@
+﻿@model TodoList.ViewModels.UserSignInModel
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Sign In</title>
+    <style>
+td {padding:5px;}
+button{margin: 5px;}
+</style>
+</head>
+<body>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="SignIn" asp-controller="Accounts"  asp-antiforgery="true">
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input type="text" asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password" class="control-label"></label>
+                    <input type="text" asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Sign in"  class="btn btn-primary" />
+                </div>
+        </form>
+    </div>
+</div>
+<a asp-controller="Accounts" asp-action="CreateAccount">Create new account</a>
+</body>

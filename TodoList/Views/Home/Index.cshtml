@@ -1,0 +1,61 @@
+﻿@using System.Security.Claims
+@model IEnumerable<TodoList.Models.TodoItem>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<div class="text-center">
+    <h1 class="display-4">Welcome @Context.User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Name).Value</h1>
+</div>
+<form asp-controller="Home" asp-action="Filter" >
+    <p>
+        Title: <input type="text" name="searchString" />
+        <input type="submit" value="Filter" />
+    </p>
+    <a asp-action="Index" asp-controller="Home">Reset filter</a>
+</form>
+<p>
+    <a asp-action="Create" asp-controller="TodoItem">Create New</a>
+</p>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+            <th>
+            @Html.DisplayNameFor(model => model.CreatedAt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Deadline)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsDone)
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedAt)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Deadline)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsDone)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-controller="TodoItem" asp-route-Id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-controller="TodoItem" asp-route-Id="@item.Id">Details</a> |
+                <a asp-action="Complete" asp-controller="TodoItem" asp-route-Id="@item.Id">Complete</a> |
+                <a asp-action="Delete" asp-controller="TodoItem" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
