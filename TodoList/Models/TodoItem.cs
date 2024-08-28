@@ -12,6 +12,7 @@ public class TodoItem
         this.Name = todoItem.Name;
         this.Description = todoItem.Description;
         this.Deadline = todoItem.DeadlineDate.Add(todoItem.DeadlineTime.TimeOfDay);
+        this.Deadline = this.Deadline.ToUniversalTime();
         this.Id = todoItem.Id;
     }
     public int? Id { get; set; }
@@ -19,10 +20,10 @@ public class TodoItem
     public string? Description { get; set; }
     [Display(Name = "Created at")]
     [DataType(DataType.DateTime)]
+    [DisplayFormat(DataFormatString = "{0:g}")]
     public DateTime CreatedAt { get; set; }
     [DataType(DataType.DateTime)]
-    [DisplayFormat(DataFormatString = "{0:g" +
-        "}")]
+    [DisplayFormat(DataFormatString = "{0:g}")]
     public DateTime Deadline { get; set; }
     [Display(Name = "Is completed")]
     public bool IsDone { get; set; } = false;

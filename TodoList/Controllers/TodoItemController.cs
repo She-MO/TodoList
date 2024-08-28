@@ -27,7 +27,7 @@ public class TodoItemController : Controller
         {
             int id = int.Parse(HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
             TodoItem newItem = new TodoItem(todoItem);
-            newItem.CreatedAt = DateTime.Now;
+            newItem.CreatedAt = DateTime.UtcNow;
             newItem.User = await _db.Accounts.FirstOrDefaultAsync(user => user.Id == id);
             await _db.TodoItems.AddAsync(newItem);
             await _db.SaveChangesAsync();
@@ -49,6 +49,9 @@ public class TodoItemController : Controller
         {
             return NotFound();
         }
+
+        item.Deadline = item.Deadline.ToLocalTime();
+        item.CreatedAt = item.CreatedAt.ToLocalTime();
         TodoItemViewModel itemModel = new TodoItemViewModel(item);
         return View(itemModel);
     }
@@ -68,6 +71,8 @@ public class TodoItemController : Controller
             itemToUpdate.Name = todoItemModel.Name;
             itemToUpdate.Description = todoItemModel.Description;
             itemToUpdate.Deadline = todoItemModel.DeadlineDate.Add(todoItemModel.DeadlineTime.TimeOfDay);
+            itemToUpdate.Deadline = itemToUpdate.Deadline.ToUniversalTime();
+            itemToUpdate.CreatedAt = itemToUpdate.CreatedAt.ToUniversalTime();
             _db.TodoItems.Update(itemToUpdate); 
             await _db.SaveChangesAsync();
             return RedirectToAction("Index", "Home");

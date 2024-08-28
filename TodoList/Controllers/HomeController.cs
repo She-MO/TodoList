@@ -11,7 +11,7 @@ namespace TodoList.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    readonly AccountInfoContext _db;
+    private readonly AccountInfoContext _db;
 
     public HomeController(ILogger<HomeController> logger, AccountInfoContext accountInfoDb)
     {
@@ -21,12 +21,25 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         int userId = int.Parse(HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
-        return View(await _db.TodoItems.Where(item => item.UserAccountId == userId).ToListAsync());
+        var items = await _db.TodoItems.Where(item => item.UserAccountId == userId).ToListAsync();
+        items.ForEach(item =>
+        {
+            item.Deadline = item.Deadline.ToLocalTime();
+            item.CreatedAt = item.CreatedAt.ToLocalTime();
+        });
+        return View(items);
     }
     public async Task<IActionResult> Filter(string searchString)
     {
         int userId = int.Parse(HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
-        return View("~/Views/Home/Index.cshtml", await _db.TodoItems.Where(item => item.UserAccountId == userId && item.Name.Contains(searchString)).ToListAsync());
+        var items = await _db.TodoItems.Where(item => item.UserAccountId == userId && item.Name.Contains(searchString))
+            .ToListAsync();
+        items.ForEach(item =>
+        {
+            item.Deadline = item.Deadline.ToLocalTime();
+            item.CreatedAt = item.CreatedAt.ToLocalTime();
+        });
+        return View("~/Views/Home/Index.cshtml", items);
     }
     public IActionResult Privacy()
     {

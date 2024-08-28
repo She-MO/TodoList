@@ -73,7 +73,7 @@ public class AccountsController : Controller
              UserAccount? checkUser = await _db.Accounts.FirstOrDefaultAsync(u => u.Email == user.Email);
             if (checkUser is null || !PasswordIsCorrect(checkUser, checkUser.Password, user.Password))
             {
-                return Unauthorized();
+                return View("~/Views/Accounts/SignIn.cshtml", user);
             }
             List<Claim> claims = new List<Claim> { 
                 new Claim(ClaimTypes.Email, checkUser.Email), 
